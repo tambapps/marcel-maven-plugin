@@ -1,25 +1,8 @@
-/*
- * Copyright (C) 2011 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.tambapps.marcel.maven.plugin;
 
-import com.tambapps.marcel.compiler.CompilationResult;
-import com.tambapps.marcel.compiler.CompiledClass;
 import com.tambapps.marcel.compiler.CompilerConfiguration;
 import com.tambapps.marcel.compiler.MarcelCompiler;
+import com.tambapps.marcel.compiler.exception.MarcelCompilerException;
 import com.tambapps.marcel.lexer.MarcelLexerException;
 import com.tambapps.marcel.parser.MarcelParserException;
 import com.tambapps.marcel.parser.exception.MarcelSemanticException;
@@ -36,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -67,7 +51,7 @@ public abstract class AbstractCompileMojo extends AbstractMarcelSourcesMojo {
      */
     @SuppressWarnings({"rawtypes"})
     protected synchronized void doCompile(final Set<File> sources, final List<String> classpath, final File compileOutputDirectory)
-            throws IOException, MarcelLexerException, MarcelParserException, MarcelSemanticException {
+            throws IOException, MarcelLexerException, MarcelParserException, MarcelSemanticException, MarcelCompilerException {
         if (sources == null || sources.isEmpty()) {
             getLog().info("No sources specified for compilation. Skipping.");
             return;
@@ -80,24 +64,24 @@ public abstract class AbstractCompileMojo extends AbstractMarcelSourcesMojo {
         CompilerConfiguration configuration = CompilerConfiguration.getDEFAULT_CONFIGURATION();
         MarcelCompiler compiler = new MarcelCompiler(configuration);
 
-        CompilationResult compilationResult = compiler.compile(marcelClassLoader, sources);
-
-        // log compiled classes
-        // TODO we keep all class bytes in memory. Must implement a way to just write the bytes without storing them
-        //  (put the below code in marcel compiler)
-        List<CompiledClass> classes = compilationResult.getClasses();
-        for (CompiledClass c : classes) {
-
+        AtomicInteger classesCount = new AtomicInteger();
+        compiler.compile(marcelClassLoader, sources, (c) -> {
             String name = c.getClassName().replace('.', File.separatorChar) + ".class";
             File path = new File(compileOutputDirectory, name);
             // ensure the path is ready for the file
             File directory = path.getParentFile();
-            if (directory != null && !directory.exists()) {
-                directory.mkdirs();
+            if (directory != null && !directory.exists() && !directory.mkdirs()) {
+                throw new MarcelCompilerException("Couldn't create directory " + directory);
             }
-            Files.write(path.toPath(), c.getBytes());
-        }
-        getLog().info("Compiled " + classes.size() + " file" + (classes.size() != 1 ? "s" : "") + ".");
+            try {
+                Files.write(path.toPath(), c.getBytes());
+            } catch (IOException e) {
+                throw new MarcelCompilerException(e);
+            }
+            classesCount.incrementAndGet();
+        });
+        // log compiled classes
+        getLog().info("Compiled " + classesCount.get() + " file" + (classesCount.get() != 1 ? "s" : "") + ".");
     }
 
 
