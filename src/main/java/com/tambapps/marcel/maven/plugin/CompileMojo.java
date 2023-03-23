@@ -18,7 +18,7 @@ package com.tambapps.marcel.maven.plugin;
 
 import com.tambapps.marcel.compiler.exception.MarcelCompilerException;
 import com.tambapps.marcel.lexer.MarcelLexerException;
-import com.tambapps.marcel.parser.MarcelParserException;
+import com.tambapps.marcel.parser.exception.MarcelParserException;
 import com.tambapps.marcel.parser.exception.MarcelSemanticException;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;

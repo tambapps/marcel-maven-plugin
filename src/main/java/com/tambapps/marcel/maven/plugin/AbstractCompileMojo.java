@@ -4,7 +4,7 @@ import com.tambapps.marcel.compiler.CompilerConfiguration;
 import com.tambapps.marcel.compiler.MarcelCompiler;
 import com.tambapps.marcel.compiler.exception.MarcelCompilerException;
 import com.tambapps.marcel.lexer.MarcelLexerException;
-import com.tambapps.marcel.parser.MarcelParserException;
+import com.tambapps.marcel.parser.exception.MarcelParserException;
 import com.tambapps.marcel.parser.exception.MarcelSemanticException;
 import marcel.lang.MarcelClassLoader;
 import marcel.lang.URLMarcelClassLoader;
