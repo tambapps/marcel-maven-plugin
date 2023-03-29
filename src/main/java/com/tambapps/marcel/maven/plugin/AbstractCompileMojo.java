@@ -61,7 +61,8 @@ public abstract class AbstractCompileMojo extends AbstractMarcelSourcesMojo {
             marcelClassLoader.addLibraryJar(new File(path));
         }
 
-        CompilerConfiguration configuration = CompilerConfiguration.getDEFAULT_CONFIGURATION();
+
+        CompilerConfiguration configuration = new CompilerConfiguration();
         MarcelCompiler compiler = new MarcelCompiler(configuration);
 
         AtomicInteger classesCount = new AtomicInteger();
