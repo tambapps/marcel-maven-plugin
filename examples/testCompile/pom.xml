@@ -11,9 +11,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>marcel-maven-plugin-test-crossCompile</artifactId>
+  <artifactId>marcel-maven-plugin-test-testCompile</artifactId>
 
-  <name>Marcel Maven Plugin Cross Compile Test</name>
+  <name>Marcel Maven Plugin Basic Compile Test</name>
   <description>The simplest compile use case.</description>
 
   <dependencies>
@@ -33,13 +33,10 @@
           <execution>
             <goals>
               <goal>compile</goal>
+              <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

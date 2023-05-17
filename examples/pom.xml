@@ -9,8 +9,14 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>GMavenPlus Plugin Basic Compile Test</name>
+  <name>GMavenPlus Plugin Test Compile Test</name>
   <description>The simplest compile use case.</description>
+
+  <modules>
+    <module>basicCompile</module>
+    <module>crossCompile</module>
+    <module>testCompile</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
