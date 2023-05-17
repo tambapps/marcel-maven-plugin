@@ -16,6 +16,7 @@ Add the plugin in your pom.
           <execution>
             <goals>
               <goal>compile</goal>
+                <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
@@ -46,6 +47,7 @@ To use cross compilation, you'll also need a plugin to compile Java files, like 
           <execution>
             <goals>
               <goal>compile</goal>
+              <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
